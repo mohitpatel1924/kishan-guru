@@ -26,10 +26,12 @@ Visit: http://localhost:3000
 - **Features**:
   - Crop Recommendation System
   - Disease Detection
-  - Irrigation Advisory
+  - Financial Managment
   - Expert Consultation
   - Multi-language Support (i18n)
   - Responsive Design
+  - Crop Managment
+  - My Crop
 
 ## 🛠️ Available Scripts
 
