@@ -1,10 +1,38 @@
 import Header from "@/components/Header";
-import { Eye, DollarSign, AlertTriangle, TrendingUp, Sun, Leaf } from "lucide-react";
+import { Eye, DollarSign, AlertTriangle, TrendingUp, Sun, Leaf, Cloud, CloudRain } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
+import { getCurrentWeather, getWeatherForecast, getWeatherConditionTranslation, type WeatherData, type ForecastDay } from "@/lib/weather";
 
 export default function Index() {
   const { t } = useTranslation();
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [forecast, setForecast] = useState<ForecastDay[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchWeather() {
+      setLoading(true);
+      const weatherData = await getCurrentWeather('Mumbai');
+      const forecastData = await getWeatherForecast('Mumbai');
+      
+      if (weatherData) setWeather(weatherData);
+      if (forecastData.length > 0) setForecast(forecastData);
+      setLoading(false);
+    }
+    
+    fetchWeather();
+  }, []);
+
+  const getWeatherIcon = (condition: string) => {
+    if (condition.includes('Rain') || condition.includes('Drizzle')) {
+      return <CloudRain className="w-12 h-12 text-blue-500" />;
+    } else if (condition.includes('Cloud')) {
+      return <Cloud className="w-12 h-12 text-gray-400" />;
+    }
+    return <Sun className="w-12 h-12 text-amber-500" />;
+  };
 
   return (
     <div className="min-h-screen bg-secondary">
@@ -114,62 +142,71 @@ export default function Index() {
             <h2 className="text-lg font-semibold text-foreground mb-4">
               {t("weather.title")}
             </h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              {t("weather.location")}
-            </p>
-
-            <div className="space-y-4">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-3xl font-bold text-foreground">
-                    {t("weather.temperature")}
-                  </span>
-                  <Sun className="w-12 h-12 text-amber-500" />
-                </div>
-                <p className="text-sm text-muted-foreground">{t("weather.condition")}</p>
+            {loading ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">Loading weather...</p>
               </div>
+            ) : weather ? (
+              <>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {weather.location}
+                </p>
 
-              <div className="grid grid-cols-3 gap-2 text-sm">
-                <div className="bg-secondary p-3 rounded text-center">
-                  <p className="text-muted-foreground text-xs mb-1">{t("weather.humidity")}</p>
-                  <p className="font-semibold text-foreground">65%</p>
-                </div>
-                <div className="bg-secondary p-3 rounded text-center">
-                  <p className="text-muted-foreground text-xs mb-1">{t("weather.wind")}</p>
-                  <p className="font-semibold text-foreground">12 km/h</p>
-                </div>
-                <div className="bg-secondary p-3 rounded text-center">
-                  <p className="text-muted-foreground text-xs mb-1">{t("weather.rainfall")}</p>
-                  <p className="font-semibold text-foreground">2.8mm</p>
-                </div>
-              </div>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-3xl font-bold text-foreground">
+                        {weather.temperature}°C
+                      </span>
+                      {getWeatherIcon(weather.condition)}
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {getWeatherConditionTranslation(weather.condition)}
+                    </p>
+                  </div>
 
-              <div className="border-t border-border pt-4 mt-4">
-                <h3 className="text-sm font-semibold text-foreground mb-3">
-                  {t("weather.forecast")}
-                </h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">{t("weather.today")}</span>
-                    <span className="font-medium">28°C</span>
-                    <span className="text-muted-foreground">{t("weather.forecastPartly")}</span>
-                    <span className="text-muted-foreground">10%</span>
+                  <div className="grid grid-cols-3 gap-2 text-sm">
+                    <div className="bg-secondary p-3 rounded text-center">
+                      <p className="text-muted-foreground text-xs mb-1">{t("weather.humidity")}</p>
+                      <p className="font-semibold text-foreground">{weather.humidity}%</p>
+                    </div>
+                    <div className="bg-secondary p-3 rounded text-center">
+                      <p className="text-muted-foreground text-xs mb-1">{t("weather.wind")}</p>
+                      <p className="font-semibold text-foreground">{weather.windSpeed} km/h</p>
+                    </div>
+                    <div className="bg-secondary p-3 rounded text-center">
+                      <p className="text-muted-foreground text-xs mb-1">{t("weather.rainfall")}</p>
+                      <p className="font-semibold text-foreground">{weather.rainfall.toFixed(1)}mm</p>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">{t("weather.tomorrow")}</span>
-                    <span className="font-medium">30°C</span>
-                    <span className="text-muted-foreground">{t("weather.forecastSunny")}</span>
-                    <span className="text-muted-foreground">0%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">{t("weather.day3")}</span>
-                    <span className="font-medium">26°C</span>
-                    <span className="text-muted-foreground">{t("weather.forecastRainy")}</span>
-                    <span className="text-muted-foreground">80%</span>
-                  </div>
+
+                  {forecast.length > 0 && (
+                    <div className="border-t border-border pt-4 mt-4">
+                      <h3 className="text-sm font-semibold text-foreground mb-3">
+                        {t("weather.forecast")}
+                      </h3>
+                      <div className="space-y-2 text-sm">
+                        {forecast.map((day, index) => (
+                          <div key={index} className="flex justify-between items-center">
+                            <span className="text-muted-foreground w-20">{day.date}</span>
+                            <span className="font-medium w-16">{day.temperature}°C</span>
+                            <span className="text-muted-foreground flex-1 text-center">
+                              {getWeatherConditionTranslation(day.condition)}
+                            </span>
+                            <span className="text-muted-foreground w-12 text-right">{day.rainChance}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">Unable to load weather data</p>
+                <p className="text-sm text-muted-foreground">{t("weather.location")}</p>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Core Modules */}
