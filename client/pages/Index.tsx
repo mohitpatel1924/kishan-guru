@@ -1,21 +1,22 @@
 import Header from "@/components/Header";
-import { Eye, DollarSign, AlertTriangle, TrendingUp, Sun, Leaf, Cloud, CloudRain } from "lucide-react";
+import { Eye, DollarSign, AlertTriangle, TrendingUp, Sun, Leaf, Cloud, CloudRain, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
-import { getCurrentWeather, getWeatherForecast, getWeatherConditionTranslation, type WeatherData, type ForecastDay } from "@/lib/weather";
+import { getCurrentWeather, getWeatherForecast, getWeatherConditionTranslation, INDIAN_CITIES, type WeatherData, type ForecastDay } from "@/lib/weather";
 
 export default function Index() {
   const { t } = useTranslation();
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [forecast, setForecast] = useState<ForecastDay[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCity, setSelectedCity] = useState('Mumbai');
 
   useEffect(() => {
     async function fetchWeather() {
       setLoading(true);
-      const weatherData = await getCurrentWeather('Mumbai');
-      const forecastData = await getWeatherForecast('Mumbai');
+      const weatherData = await getCurrentWeather(selectedCity);
+      const forecastData = await getWeatherForecast(selectedCity);
       
       if (weatherData) setWeather(weatherData);
       if (forecastData.length > 0) setForecast(forecastData);
@@ -23,7 +24,7 @@ export default function Index() {
     }
     
     fetchWeather();
-  }, []);
+  }, [selectedCity]);
 
   const getWeatherIcon = (condition: string) => {
     if (condition.includes('Rain') || condition.includes('Drizzle')) {
@@ -139,9 +140,25 @@ export default function Index() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Weather section */}
           <div className="bg-white rounded-lg p-6 shadow-sm border border-border">
-            <h2 className="text-lg font-semibold text-foreground mb-4">
-              {t("weather.title")}
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-foreground">
+                {t("weather.title")}
+              </h2>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <select
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  className="pl-9 pr-4 py-2 text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+                >
+                  {INDIAN_CITIES.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}, {city.state}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             {loading ? (
               <div className="text-center py-8">
                 <p className="text-muted-foreground">Loading weather...</p>

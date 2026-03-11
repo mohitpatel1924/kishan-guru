@@ -1,6 +1,39 @@
 const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 const WEATHER_API_BASE = 'https://api.openweathermap.org/data/2.5';
 
+export const INDIAN_CITIES = [
+  { name: 'Mumbai', state: 'Maharashtra' },
+  { name: 'Delhi', state: 'Delhi' },
+  { name: 'Bangalore', state: 'Karnataka' },
+  { name: 'Hyderabad', state: 'Telangana' },
+  { name: 'Chennai', state: 'Tamil Nadu' },
+  { name: 'Kolkata', state: 'West Bengal' },
+  { name: 'Pune', state: 'Maharashtra' },
+  { name: 'Ahmedabad', state: 'Gujarat' },
+  { name: 'Jaipur', state: 'Rajasthan' },
+  { name: 'Lucknow', state: 'Uttar Pradesh' },
+  { name: 'Chandigarh', state: 'Punjab' },
+  { name: 'Bhopal', state: 'Madhya Pradesh' },
+  { name: 'Patna', state: 'Bihar' },
+  { name: 'Indore', state: 'Madhya Pradesh' },
+  { name: 'Nagpur', state: 'Maharashtra' },
+  { name: 'Surat', state: 'Gujarat' },
+  { name: 'Vadodara', state: 'Gujarat' },
+  { name: 'Ludhiana', state: 'Punjab' },
+  { name: 'Agra', state: 'Uttar Pradesh' },
+  { name: 'Nashik', state: 'Maharashtra' },
+  { name: 'Varanasi', state: 'Uttar Pradesh' },
+  { name: 'Meerut', state: 'Uttar Pradesh' },
+  { name: 'Rajkot', state: 'Gujarat' },
+  { name: 'Amritsar', state: 'Punjab' },
+  { name: 'Ranchi', state: 'Jharkhand' },
+  { name: 'Guwahati', state: 'Assam' },
+  { name: 'Bhubaneswar', state: 'Odisha' },
+  { name: 'Coimbatore', state: 'Tamil Nadu' },
+  { name: 'Kochi', state: 'Kerala' },
+  { name: 'Thiruvananthapuram', state: 'Kerala' },
+];
+
 export interface WeatherData {
   temperature: number;
   condition: string;
@@ -20,7 +53,7 @@ export interface ForecastDay {
 export async function getCurrentWeather(city: string = 'Mumbai'): Promise<WeatherData | null> {
   try {
     const response = await fetch(
-      `${WEATHER_API_BASE}/weather?q=${city},IN&appid=${WEATHER_API_KEY}&units=metric`
+      `${WEATHER_API_BASE}/weather?q=${encodeURIComponent(city)},IN&appid=${WEATHER_API_KEY}&units=metric`
     );
     
     if (!response.ok) {
@@ -36,7 +69,7 @@ export async function getCurrentWeather(city: string = 'Mumbai'): Promise<Weathe
       humidity: data.main.humidity,
       windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
       rainfall: data.rain?.['1h'] || 0,
-      location: `${data.name}, India`,
+      location: `${data.name}, ${data.sys.country}`,
     };
   } catch (error) {
     console.error('Error fetching weather:', error);
@@ -47,7 +80,7 @@ export async function getCurrentWeather(city: string = 'Mumbai'): Promise<Weathe
 export async function getWeatherForecast(city: string = 'Mumbai'): Promise<ForecastDay[]> {
   try {
     const response = await fetch(
-      `${WEATHER_API_BASE}/forecast?q=${city},IN&appid=${WEATHER_API_KEY}&units=metric&cnt=3`
+      `${WEATHER_API_BASE}/forecast?q=${encodeURIComponent(city)},IN&appid=${WEATHER_API_KEY}&units=metric&cnt=3`
     );
     
     if (!response.ok) {
