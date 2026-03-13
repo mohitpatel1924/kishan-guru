@@ -3,7 +3,7 @@ import { Eye, DollarSign, AlertTriangle, TrendingUp, Sun, Leaf, Cloud, CloudRain
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
-import { getCurrentWeather, getWeatherForecast, getWeatherConditionTranslation, INDIAN_CITIES, type WeatherData, type ForecastDay } from "@/lib/weather";
+import { getCurrentWeather, getWeatherForecast, getWeatherConditionTranslation, getWeatherConditionKey, INDIAN_CITIES, type WeatherData, type ForecastDay } from "@/lib/weather";
 
 export default function Index() {
   const { t } = useTranslation();
@@ -178,7 +178,7 @@ export default function Index() {
                       {getWeatherIcon(weather.condition)}
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {getWeatherConditionTranslation(weather.condition)}
+                      {t(getWeatherConditionKey(weather.condition))}
                     </p>
                   </div>
 
@@ -208,7 +208,7 @@ export default function Index() {
                             <span className="text-muted-foreground w-20">{day.date}</span>
                             <span className="font-medium w-16">{day.temperature}°C</span>
                             <span className="text-muted-foreground flex-1 text-center">
-                              {getWeatherConditionTranslation(day.condition)}
+                              {t(getWeatherConditionKey(day.condition))}
                             </span>
                             <span className="text-muted-foreground w-12 text-right">{day.rainChance}%</span>
                           </div>

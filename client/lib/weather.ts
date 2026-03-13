@@ -102,6 +102,21 @@ export async function getWeatherForecast(city: string = 'Mumbai'): Promise<Forec
   }
 }
 
+export function getWeatherConditionKey(condition: string): string {
+  const conditionMap: { [key: string]: string } = {
+    'Clear': 'weather.clear',
+    'Clouds': 'weather.clouds',
+    'Rain': 'weather.rain',
+    'Drizzle': 'weather.drizzle',
+    'Thunderstorm': 'weather.thunderstorm',
+    'Snow': 'weather.snow',
+    'Mist': 'weather.mist',
+    'Fog': 'weather.fog',
+  };
+  
+  return conditionMap[condition] || 'weather.clear';
+}
+
 export function getWeatherConditionTranslation(condition: string): string {
   const conditions: { [key: string]: string } = {
     'Clear': 'Sunny',
