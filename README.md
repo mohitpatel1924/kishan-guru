@@ -22,7 +22,7 @@ Visit: http://localhost:3000
 ## 📦 What's Included
 
 - **Frontend**: React 18 + TypeScript + Vite + TailwindCSS
-- **Backend**: Express 5 + TypeScript
+- **Backend**: Express 5 + TypeScript + python
 - **Features**:
   - Crop Recommendation System
   - Disease Detection
