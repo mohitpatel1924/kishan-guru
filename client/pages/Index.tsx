@@ -161,7 +161,7 @@ export default function Index() {
             </div>
             {loading ? (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">Loading weather...</p>
+                <p className="text-muted-foreground">{t("weather.loading")}</p>
               </div>
             ) : weather ? (
               <>
@@ -220,7 +220,7 @@ export default function Index() {
               </>
             ) : (
               <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">Unable to load weather data</p>
+                <p className="text-muted-foreground mb-4">{t("weather.error")}</p>
                 <p className="text-sm text-muted-foreground">{t("weather.location")}</p>
               </div>
             )}
@@ -324,12 +324,12 @@ export default function Index() {
                 </p>
                 <div className="bg-secondary p-3 rounded mb-4">
                   <div className="text-sm">
-                    <span className="text-muted-foreground">Track Expenses</span>
-                    <p className="font-semibold text-foreground">Real-time</p>
+                    <span className="text-muted-foreground">{t("financial.trackExpenses")}</span>
+                    <p className="font-semibold text-foreground">{t("financial.realtime")}</p>
                   </div>
                 </div>
                 <button className="w-full bg-primary text-white font-medium py-2 rounded-lg hover:bg-primary/90 transition-colors">
-                  Manage Finances
+                  {t("financial.button")}
                 </button>
               </Link>
 
@@ -351,12 +351,12 @@ export default function Index() {
                 </p>
                 <div className="bg-secondary p-3 rounded mb-4">
                   <div className="text-sm">
-                    <span className="text-muted-foreground">Crop Tracking</span>
-                    <p className="font-semibold text-foreground">Monitor Progress</p>
+                    <span className="text-muted-foreground">{t("viewCrops.cropTracking")}</span>
+                    <p className="font-semibold text-foreground">{t("viewCrops.monitorProgress")}</p>
                   </div>
                 </div>
                 <button className="w-full bg-primary text-white font-medium py-2 rounded-lg hover:bg-primary/90 transition-colors">
-                  View Crops
+                  {t("viewCrops.button")}
                 </button>
               </Link>
 
