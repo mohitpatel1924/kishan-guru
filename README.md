@@ -1,6 +1,5 @@
-# Website Builder Application
 
-A standalone full-stack web application with Express backend and React frontend. **No builder.io or external dependencies required!**
+A standalone full-stack web application with Express backend and React frontend. 
 
 ## 🚀 Quick Start
 
